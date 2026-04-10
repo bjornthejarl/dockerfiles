@@ -1,9 +1,20 @@
 services:
   app:
-    build:
-      context: .
     image: invoiceninja/invoiceninja-debian:latest
     restart: unless-stopped
+    environment:
+      - APP_URL=${APP_URL}
+      - APP_KEY=${APP_KEY}
+      - APP_ENV=${APP_ENV}
+      - APP_DEBUG=${APP_DEBUG}
+      - REQUIRE_HTTPS=${REQUIRE_HTTPS}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - IN_USER_EMAIL=${IN_USER_EMAIL}
+      - IN_PASSWORD=${IN_PASSWORD}
     volumes:
       - app_public_v2:/var/www/html/public
       - app_storage_v2:/var/www/html/storage
@@ -26,9 +37,9 @@ services:
     restart: unless-stopped
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
     volumes:
       - mysql_data_v2:/var/lib/mysql
 
