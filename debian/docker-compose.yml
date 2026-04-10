@@ -2,70 +2,48 @@ services:
   app:
     build:
       context: .
-    image: invoiceninja/invoiceninja-debian:${TAG:-latest}
+    image: invoiceninja/invoiceninja-debian:latest
     restart: unless-stopped
     volumes:
-      - app_public:/var/www/html/public
-      - app_storage:/var/www/html/storage
+      - app_public_v2:/var/www/html/public
+      - app_storage_v2:/var/www/html/storage
     depends_on:
-      mysql:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+      - mysql
+      - redis
 
   nginx:
     image: nginx:alpine
     restart: unless-stopped
     volumes:
       - ./nginx:/etc/nginx/conf.d:ro
-      - app_public:/var/www/html/public:ro
-      - app_storage:/var/www/html/storage:ro
+      - app_public_v2:/var/www/html/public:ro
+      - app_storage_v2:/var/www/html/storage:ro
     depends_on:
-      app:
-        condition: service_started
+      - app
 
   mysql:
     image: mariadb:10.5
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
     volumes:
-      - mysql_data:/var/lib/mysql
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "mysqladmin",
-          "ping",
-          "-h",
-          "localhost",
-          "-u${MYSQL_USER}",
-          "-p${MYSQL_PASSWORD}"
-        ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - mysql_data_v2:/var/lib/mysql
 
   redis:
     image: redis:alpine
     restart: unless-stopped
     volumes:
-      - redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - redis_data_v2:/data
 
 volumes:
-  app_public:
+  app_public_v2:
     driver: local
-  app_storage:
+  app_storage_v2:
     driver: local
-  mysql_data:
+  mysql_data_v2:
     driver: local
-  redis_data:
+  redis_data_v2:
     driver: local
