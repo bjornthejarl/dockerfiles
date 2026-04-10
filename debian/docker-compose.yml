@@ -16,8 +16,8 @@ services:
       - IN_USER_EMAIL=${IN_USER_EMAIL}
       - IN_PASSWORD=${IN_PASSWORD}
     volumes:
-      - app_public_v2:/var/www/html/public
-      - app_storage_v2:/var/www/html/storage
+      - app_public_v3:/var/www/html/public
+      - app_storage_v3:/var/www/html/storage
     depends_on:
       - mysql
       - redis
