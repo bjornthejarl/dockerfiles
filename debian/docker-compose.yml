@@ -15,6 +15,7 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - IN_USER_EMAIL=${IN_USER_EMAIL}
       - IN_PASSWORD=${IN_PASSWORD}
+      - TRUSTED_PROXIES=*
     volumes:
       - app_public_v3:/var/www/html/public
       - app_storage_v3:/var/www/html/storage
@@ -27,8 +28,8 @@ services:
     restart: unless-stopped
     volumes:
       - ./nginx:/etc/nginx/conf.d:ro
-      - app_public_v2:/var/www/html/public:ro
-      - app_storage_v2:/var/www/html/storage:ro
+      - app_public_v3:/var/www/html/public:ro
+      - app_storage_v3:/var/www/html/storage:ro
     depends_on:
       - app
 
@@ -41,20 +42,20 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
-      - mysql_data_v2:/var/lib/mysql
+      - mysql_data_v3:/var/lib/mysql
 
   redis:
     image: redis:alpine
     restart: unless-stopped
     volumes:
-      - redis_data_v2:/data
+      - redis_data_v3:/data
 
 volumes:
-  app_public_v2:
+  app_public_v3:
     driver: local
-  app_storage_v2:
+  app_storage_v3:
     driver: local
-  mysql_data_v2:
+  mysql_data_v3:
     driver: local
-  redis_data_v2:
+  redis_data_v3:
     driver: local
